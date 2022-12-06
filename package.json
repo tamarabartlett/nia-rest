@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "sst start",
+    "start": "AWS_PROFILE=nia sst start",
     "build": "sst build",
     "deploy": "sst deploy",
     "remove": "sst remove",
     "console": "sst console",
     "typecheck": "tsc --noEmit",
-    "test": "sst bind -- vitest run",
+    "test": "AWS_PROFILE=nia sst bind -- vitest run",
     "eslint": "eslint --fix './**/*.ts'"
   },
   "devDependencies": {

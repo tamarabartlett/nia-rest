@@ -7,9 +7,8 @@ export const main: APIGatewayProxyHandlerV2 = async (event) => {
   const clientSecret = process.env.clientSecret
   const appKey = process.env.appKey
 
-  console.log(event)
   try {
-    const result = await postRequest(url, clientId, clientSecret, appKey);
+    const result = await postAuthenticate(url, clientId, clientSecret, appKey);
 
     return {
       statusCode: 200,
@@ -21,7 +20,7 @@ export const main: APIGatewayProxyHandlerV2 = async (event) => {
   }
 };
 
-function postRequest(url: string , clientId: string , clientSecret: string , appKey: string) {
+function postAuthenticate(url: string , clientId: string , clientSecret: string , appKey: string) {
   const options = {
     hostname: url,
     path: '/back-office/auth/tokens',

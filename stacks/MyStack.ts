@@ -6,7 +6,7 @@ export function MyStack({ stack }: StackContext) {
     defaults: {
       function: {
         timeout: 20,
-        environment: { 
+        environment: {
           url: process.env.DRIVEWEALTH_URL as string,
           appKey: process.env.APP_KEY as string,
           clientId: process.env.CLIENT_ID as string,
@@ -15,10 +15,11 @@ export function MyStack({ stack }: StackContext) {
       },
     },
     routes: {
-      "GET /notes": "functions/list.main",
-      "GET /notes/{id}": "functions/get.main",
-      "PUT /notes/{id}": "functions/update.main",
-      "POST /authenticate": "functions/authenticate.main",
+      // "GET /notes": "functions/list.main",
+      // "GET /notes/{id}": "functions/get.main",
+      // "PUT /notes/{id}": "functions/update.main",
+      "GET /authenticate": "functions/authenticate.main",
+      "POST /createUser": "functions/user.main",
     },
   });
 
