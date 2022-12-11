@@ -1,4 +1,5 @@
-import https from 'https';
+// import https from 'https';
+import axios from 'axios';
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 
 export const main: APIGatewayProxyHandlerV2 = async (event) => {
@@ -10,54 +11,35 @@ export const main: APIGatewayProxyHandlerV2 = async (event) => {
   try {
     const result = await postAuthenticate(url, clientId, clientSecret, appKey);
 
-    return {
-      statusCode: 200,
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(result),
-    }
+    return result
   } finally {
     console.log("Party on finally")
   }
 };
 
-function postAuthenticate(url: string , clientId: string , clientSecret: string , appKey: string) {
-  const options = {
-    hostname: url,
-    path: '/back-office/auth/tokens',
-    method: 'POST',
-    port: 443, // 👈️ replace with 80 for HTTP requests
-    headers: {
-      'Content-Type': 'application/json',
-      'dw-client-app-key': appKey,
-    },
-  };
-
-  return new Promise((resolve, reject) => {
-    const req = https.request(options, res => {
-      let rawData = '';
-
-      res.on('data', chunk => {
-        rawData += chunk;
-      });
-
-      res.on('end', () => {
-        try {
-          resolve(JSON.parse(rawData));
-        } catch (err) {
-          reject(new Error(err));
-        }
-      });
-    });
-
-    req.on('error', err => {
-      reject(new Error(err));
-    });
-
-    // 👇️ write the body to the Request object
-    req.write(JSON.stringify({
+export function postAuthenticate(url: string , clientId: string , clientSecret: string , appKey: string): Promise<any> {
+  return new Promise((resolve) => {
+    axios.post(url + '/back-office/auth/tokens', {
       "clientID": clientId,
       "clientSecret": clientSecret
-    }));
-    req.end();
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'dw-client-app-key': appKey,
+      }
+    }).then(function (response) {
+      console.log("response in then: " + response )
+      resolve({
+        statusCode: 200,
+        body: response,
+        headers: {'Content-Type': 'application/json'},
+      })
+    }).catch(function (error) {
+      resolve({
+        statusCode: 400,
+        body: error,
+        headers: {'Content-Type': 'application/json'},
+      })
+    });
   });
 }
