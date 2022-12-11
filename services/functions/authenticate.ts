@@ -10,7 +10,6 @@ export const main: APIGatewayProxyHandlerV2 = async (event) => {
 
   try {
     const result = await postAuthenticate(url, clientId, clientSecret, appKey);
-
     return result
   } finally {
     console.log("Party on finally")
@@ -28,10 +27,9 @@ export function postAuthenticate(url: string , clientId: string , clientSecret: 
         'dw-client-app-key': appKey,
       }
     }).then(function (response) {
-      console.log("response in then: " + response )
       resolve({
         statusCode: 200,
-        body: response,
+        body: response.data,
         headers: {'Content-Type': 'application/json'},
       })
     }).catch(function (error) {
