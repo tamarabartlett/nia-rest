@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import * as authenticate from '../../functions/authenticate';
 
-describe("sample", () => {
+describe("authenticate integration", () => {
   it("should error on bad app key", async () => {
     const response = await authenticate.postAuthenticate("https://bo-api.drivewealth.io", "clientId", "clientSecret", "appKey")
       expect(response.statusCode).toEqual(400)
