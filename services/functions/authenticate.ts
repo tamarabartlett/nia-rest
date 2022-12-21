@@ -1,6 +1,8 @@
-// import https from 'https';
 import axios from 'axios';
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import { DynamoDB } from "aws-sdk";
+
+const dynamoDb = new DynamoDB.DocumentClient();
 
 export const main: APIGatewayProxyHandlerV2 = async (event) => {
   const url = process.env.url
@@ -26,7 +28,22 @@ export function postAuthenticate(url: string , clientId: string , clientSecret: 
         'Content-Type': 'application/json',
         'dw-client-app-key': appKey,
       }
-    }).then(function (response) {
+    }).then(async function (response) {
+      const params = {
+        TableName: process.env.AUTH_TOKEN_TABLE_NAME,
+        Item: {
+          id: 1,
+          authToken: response.data.access_token,
+          createdAt: Date.now()
+        },
+      };
+      
+      console.log("about to putOutput")
+
+      var putOutput = await dynamoDb.put(params).promise();
+      console.log("putOutput")
+      console.log(putOutput)
+
       resolve({
         statusCode: 200,
         body: response.data,

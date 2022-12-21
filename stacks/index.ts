@@ -1,4 +1,4 @@
-import { MyStack } from "./MyStack";
+import { MainStack } from "./MainStack";
 import { App } from "@serverless-stack/resources";
 import * as dotenv from 'dotenv'
 
@@ -12,5 +12,5 @@ export default function (app: App) {
       format: "esm",
     },
   });
-  app.stack(MyStack);
+  app.stack(MainStack);
 }
