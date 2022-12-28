@@ -31,31 +31,47 @@ async function postCreateUser(url: string, appKey: string) {
     },
   };
 
-  const getResponse = await dynamoDb.get(authTableParams).promise();
-  //TODO handle error from get response
+  dynamoDb.get(authTableParams).promise().then((response) => {
+    const accessToken = response["Item"].authToken
 
-  await dynamoDb.put(userTableParams).promise();
+    dynamoDb.put(userTableParams).promise().then((response) => {
+      // TODO handle the success of the new user to our user dynamo table
+      console.log("response from dynamoDB user table")
+      console.log(response)
+    }).catch((error) => {
+      console.log("NiaError: Error retrieving auth token from DynamoDB. " + error)
+      //TODO handle the error if saving/update the new user to our user dynamo table
+    });
 
-  const accessToken = "eyJraWQiOiJBYVc4U1h6UGo2cEpIMkRNdVhoMS1LaXROWXM2V2hTaEI0UWdYYm5Eaks4IiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmJZV1BBQ2hZR09Wb0J3WEh4X0VDYWxXSnJzZ25DNXVJVkJsMXJVYXBGTUEiLCJpc3MiOiJodHRwczovL2FwMS1kcml2ZXdlYWx0aC5va3RhcHJldmlldy5jb20vb2F1dGgyL2F1czNzeTdydTEzV3BkUFNPMWQ3IiwiYXVkIjoiRFdBdXRoU2VydmVyVUFUIiwiaWF0IjoxNjcwOTAzNTQwLCJleHAiOjE2NzA5MDcxNDAsImNpZCI6IjBvYTU3MXBrM3VVOGVwdW9HMWQ3Iiwic2NwIjpbImFsbF90cmFkaW5nIl0sInN1YiI6IjBvYTU3MXBrM3VVOGVwdW9HMWQ3IiwicHJvZmlsZSI6eyJwZXJtaXNzaW9uSUQiOiIyODhhYTJjNi01MTBkLTY4MGYtN2IyZC0xMjc1YTY3MjZjMWEiLCJyb2xlIjoiQUxMX1RSQURFUiIsInBhcnRuZXJJRCI6Ijk2NjFlYjg2LTYzMzAtNDQ5OS05OTVhLTYzODU4NTdhZGNiYSIsInVzZXJJRCI6IjE3MmU2NTZlLWMyOGUtNDY0Mi05ODk0LWE5MWZjZGQxYmQ0NSJ9fQ.P7SVl3lZ2BtR9DioUeoe_c3Z40siB9N7tnElYoIeRWr6nfGhcUjpdtXvz2IVWCVXQnJpZV3u8Ncp64sTCIZ0u6nKu2gQTXHR6P-1qbKchFxW-1LmsOgx8i17z7zKMBqye5OympoOaNz6D8I5W2gMtJtmuephlRVpxSFj28n1dZka71G0oCEuET3ufxpQSrwAaqWqEpUR-KA_02kfRYc2dLBRFR0jdUCCFweLMj3aP3vI-_px7dL9KhoEEmfqXRwp_v128d0CXpnuStPDroVQBCol-3fir-ucORFKBiA462gvDHc39OWhnhYPKOB0oKxP5wxi340mXloHN-rG8FV-Ww"
+    return new Promise(resolve => {
+      axios.post(url + '/back-office/users/', exampleUser, {
+        headers: {
+          'Content-Type': 'application/json',
+          'dw-client-app-key': appKey,
+          'Authorization': "Bearer " + accessToken
+        }
+      }).then((response) => {
+        // TODO should we save all the info from the transaction
 
-  const response = await axios.post(url + '/back-office/users/', exampleUser, {
-    headers: {
-      'Content-Type': 'application/json',
-      'dw-client-app-key': appKey,
-      'Authorization': "Bearer " + accessToken
-    }
-  })
+        resolve({
+          statusCode: response.status,
+          body: response.data,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }).catch((error) => {
+        // TODO handle bad response from braintree
 
-  console.log(">>>>>>>> response")
-  console.log(response)
-
-  return new Promise(resolve => {
-    resolve({
-      statusCode: response.status,
-      body: response.data.status.description,
-      headers: { 'Content-Type': 'application/json' },
+        resolve({
+          statusCode: 400,
+          body: error,
+          headers: {'Content-Type': 'application/json'},
+        })
+      })
     })
-  })
+  }).catch((error) => {
+    console.log("NiaError: Error retrieving auth token from DynamoDB. " + error)
+  //TODO handle error from get response
+  });
 }
 
 const exampleUser = {

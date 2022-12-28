@@ -28,7 +28,7 @@ export function postAuthenticate(url: string , clientId: string , clientSecret: 
         'Content-Type': 'application/json',
         'dw-client-app-key': appKey,
       }
-    }).then(async function (response) {
+    }).then(async (response) => {
       const params = {
         TableName: process.env.AUTH_TOKEN_TABLE_NAME,
         Item: {
@@ -37,19 +37,20 @@ export function postAuthenticate(url: string , clientId: string , clientSecret: 
           createdAt: Date.now()
         },
       };
-      
-      console.log("about to putOutput")
 
-      var putOutput = await dynamoDb.put(params).promise();
-      console.log("putOutput")
-      console.log(putOutput)
+      await dynamoDb.put(params).promise().then((response) => {
+      //TODO handle a good response of saving auth token to auth token table
+    }).catch((error) => {
+        console.log("NiaError: Error saving auth token to DynamoDB. " + error)
+        //TODO Handle gracefully
+      });
 
       resolve({
         statusCode: 200,
         body: response.data,
         headers: {'Content-Type': 'application/json'},
       })
-    }).catch(function (error) {
+    }).catch( (error) =>  {
       resolve({
         statusCode: 400,
         body: error,

@@ -12,14 +12,14 @@ export function MainStack({ stack }: StackContext) {
     primaryIndex: { partitionKey: "id" },
   });
 
-  // const userTable = new Table(stack, "UserFields", {
-  //   fields: {
-  //     // uid: "" We probably need a user_id of some sort
-  //     firstName: "string",
-  //     createdAt: "number",
-  //   },
-  //   primaryIndex: { partitionKey: "firstName", sortKey: "createdAt" },
-  // });
+  const userTable = new Table(stack, "UserFields", {
+    fields: {
+      // uid: "" We probably need a user_id of some sort
+      firstName: "string",
+      createdAt: "number",
+    },
+    primaryIndex: { partitionKey: "firstName" },
+  });
 
   const api = new Api(stack, "Api", {
     defaults: {
@@ -31,10 +31,9 @@ export function MainStack({ stack }: StackContext) {
           clientId: process.env.CLIENT_ID as string,
           clientSecret: process.env.CLIENT_SECRET as string,
           AUTH_TOKEN_TABLE_NAME: authTokenTable.tableName,
-          // USER_TABLE_NAME: userTable.tableName,
+          USER_TABLE_NAME: userTable.tableName,
         },
-        permissions: [authTokenTable]
-        // permissions: [authTokenTable, userTable]
+        permissions: [authTokenTable, userTable]
         // bind: [accessTokenTable]
       },
     },
