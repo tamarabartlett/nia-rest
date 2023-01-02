@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import * as authenticate from '../../functions/authenticate';
 
-describe("authenticate integration", () => {
+describe("authenticate integration test", () => {
   it("should error on bad app key", async () => {
     const response = await authenticate.postAuthenticate("https://bo-api.drivewealth.io", "clientId", "clientSecret", "appKey")
       expect(response.statusCode).toEqual(400)
@@ -34,9 +34,9 @@ describe("authenticate integration", () => {
     const response = await authenticate.postAuthenticate("https://bo-api.drivewealth.io", clientId, clientSecret, appKey)
       expect(response.statusCode).toEqual(200)
       console.log(response.body)
-      expect(response.body.data.token_type).toBe("Bearer");
-      expect(response.body.data.expires_in).toBeTruthy();
-      expect(response.body.data.access_token).toBeTruthy();
-      expect(response.body.data.scope).toBe("all_trading");
+      expect(response.body.token_type).toBe("Bearer");
+      expect(response.body.expires_in).toBeTruthy();
+      expect(response.body.access_token).toBeTruthy();
+      expect(response.body.scope).toBe("all_trading");
   });
 });

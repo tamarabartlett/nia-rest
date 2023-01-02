@@ -18,7 +18,8 @@ export const main: APIGatewayProxyHandlerV2 = async (event) => {
   }
 };
 
-export function postAuthenticate(url: string , clientId: string , clientSecret: string , appKey: string): Promise<any> {
+export function postAuthenticate(url: string, clientId: string, clientSecret: string, appKey: string): Promise<any> {
+  let statusCode: number;
   return new Promise((resolve) => {
     axios.post(url + '/back-office/auth/tokens', {
       "clientID": clientId,
@@ -39,22 +40,24 @@ export function postAuthenticate(url: string , clientId: string , clientSecret: 
       };
 
       await dynamoDb.put(params).promise().then((response) => {
-      //TODO handle a good response of saving auth token to auth token table
-    }).catch((error) => {
+        statusCode = 201;
+        //TODO handle a good response of saving auth token to auth token table
+      }).catch((error) => {
+        statusCode = 202;
         console.log("NiaError: Error saving auth token to DynamoDB. " + error)
         //TODO Handle gracefully
       });
 
       resolve({
-        statusCode: 200,
+        statusCode: statusCode,
         body: response.data,
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
       })
-    }).catch( (error) =>  {
+    }).catch((error) => {
       resolve({
         statusCode: 400,
         body: error,
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
       })
     });
   });
