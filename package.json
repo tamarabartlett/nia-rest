@@ -9,7 +9,8 @@
     "remove": "sst remove",
     "console": "sst console",
     "typecheck": "tsc --noEmit",
-    "test": "AWS_PROFILE=nia sst bind -- vitest run",
+    "testIntegration": "AWS_PROFILE=nia sst bind -- vitest run",
+    "testUnit": "AWS_PROFILE=nia sst bind -- vitest run --dir './services/test/unit'",
     "eslint": "eslint --fix './**/*.ts'"
   },
   "devDependencies": {
@@ -19,14 +20,17 @@
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "aws-cdk-lib": "2.50.0",
+    "aws-sdk-mock": "^5.8.0",
     "eslint": "^8.27.0",
     "eslint-plugin-react": "^7.31.10",
+    "jest-mock-axios": "^4.7.0-beta2",
     "typescript": "^4.8.4",
     "vitest": "^0.25.0"
   },
   "dependencies": {
     "@serverless-stack/node": "^1.17.1",
     "axios": "^1.2.1",
+    "axios-mock-adapter": "^1.21.2",
     "dotenv": "^16.0.3"
   },
   "workspaces": [

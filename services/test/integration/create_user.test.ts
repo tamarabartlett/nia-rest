@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import * as user from '../../functions/user';
+import * as user from '../../functions/createUser';
 
 describe("create user integration", () => {
   it("should error on bad app key", async () => {

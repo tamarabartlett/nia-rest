@@ -39,7 +39,7 @@ export function MainStack({ stack }: StackContext) {
     },
     routes: {
       "GET /authenticate": "functions/authenticate.main",
-      "POST /createUser": "functions/user.main",
+      "POST /createUser": "functions/createUser.main",
     },
   });
 
