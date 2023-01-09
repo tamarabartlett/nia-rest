@@ -33,13 +33,14 @@ export function MainStack({ stack }: StackContext) {
           AUTH_TOKEN_TABLE_NAME: authTokenTable.tableName,
           USER_TABLE_NAME: userTable.tableName,
         },
-        permissions: [authTokenTable, userTable]
-        // bind: [accessTokenTable]
+        // permissions: [authTokenTable, userTable]
+        bind: [authTokenTable, userTable]
       },
     },
     routes: {
       "GET /authenticate": "functions/authenticate.main",
       "POST /createUser": "functions/createUser.main",
+      "POST /createAccount": "functions/createInvestmentAccount.main",
     },
   });
 
